@@ -1,0 +1,81 @@
+import java.util.*;
+import java.lang.*;
+import java.math.*;
+
+public class Tester
+{
+	public static void main(String args[])
+	{
+		Scanner s=new Scanner(System.in);
+	
+	
+		ArrayList<ArrayList<Integer>> adj = new ArrayList<ArrayList<Integer>>();
+		int visited[] = new int[100005];
+		int n=s.nextInt();
+		int m=s.nextInt();
+		for (int i = 0; i <= n; i++) 
+		{
+			adj.add(new ArrayList<Integer>());
+			visited[i] = 0;
+		}
+		for (int i = 0; i < m; i++) 
+		{
+			int c = s.nextInt();
+			int b=s.nextInt();
+			{
+				adj.get(c).add(b);
+				//adj.get(b).add(c);
+			}
+		}
+	
+		long ans=1001;
+		for(int i=0;i<n;i++)
+		{
+			ans=Math.min(ans,dfs2(adj, visited,i+1));
+			
+		}
+		System.out.println(ans);
+		
+	}
+	private static long dfs2(ArrayList<ArrayList<Integer>> adj, int[] visited,int v)
+	{
+		long sum=0;
+		for(int i=0;i<1001;i++)
+			visited[i]=0;
+		
+		Stack<Integer> st = new Stack<Integer>();
+		st.push(v);
+	
+		while (!st.isEmpty()) 
+		{
+			int element = st.pop();
+			
+			if (visited[element] == 0) 
+			{
+				sum++;
+			//	System.out.println("element = "+ element);
+				
+					visited[element] = 1;
+
+				Stack<Integer> auxStack = new Stack<Integer>();
+				for (int w : adj.get(element))    //Take all the adjacent members for backtracing
+				{
+					if (visited[w] == 0)
+					{
+						auxStack.push(w);
+					}
+				}
+
+				while (!auxStack.isEmpty()) 
+				{
+					st.push(auxStack.pop());
+
+				}
+
+			}
+		
+		}
+		return sum;
+	}	
+}
+
