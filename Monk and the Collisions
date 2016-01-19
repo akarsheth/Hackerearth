@@ -1,0 +1,34 @@
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Hshing 
+{
+	public static void main(String args[])throws Exception
+	{
+		BufferedReader s=new BufferedReader(new InputStreamReader(System.in));
+		int t=Integer.parseInt(s.readLine());
+		int n,x,count;
+		int hash[];
+		
+		for(int i=0;i<t;i++)
+		{
+			hash=new int[10];
+			count=0;
+			n=Integer.parseInt(s.readLine());
+			String inp[]=s.readLine().split(" ");
+			for(int j=0;j<n;j++)
+			{
+				hash[Integer.parseInt(inp[j])%10]++;
+			}
+			for(int j=0;j<10;j++)
+			{
+				if(hash[j]>1)
+				{
+					count+=hash[j]-1;
+				}
+			}
+			System.out.println(count);
+		}
+	}
+}
