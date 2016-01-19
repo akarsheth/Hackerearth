@@ -1,0 +1,85 @@
+import java.util.*;
+import java.lang.*;
+import java.math.*;
+
+public class Tester
+{
+	public static void main(String args[])
+	{
+		Scanner s=new Scanner(System.in);
+	
+		int t=s.nextInt();
+		
+		for(int x=0;x<t;x++)
+		{
+		
+		ArrayList<ArrayList<Integer>> adj = new ArrayList<ArrayList<Integer>>();
+		int visited[] = new int[100005];
+		int n=s.nextInt();
+		int m=s.nextInt();
+		for (int i = 0; i <= n; i++) 
+		{
+			adj.add(new ArrayList<Integer>());
+			visited[i] = 0;
+		}
+		for (int i = 0; i < m; i++) 
+		{
+			int c = s.nextInt();
+			int b=s.nextInt();
+			{
+				adj.get(c).add(b);
+				adj.get(b).add(c);
+			}
+		}
+		long a[]=new long[n+1];
+		for(int i=1;i<n+1;i++)
+		{
+			a[i]=s.nextInt();
+		}
+		long ans=0;
+		for(int i=0;i<n;i++)
+		{
+			ans=Math.max(ans,dfs2(adj, visited,i+1,a));
+			
+		}
+		System.out.println(ans);
+		}
+	}
+	private static long dfs2(ArrayList<ArrayList<Integer>> adj, int[] visited,int v,long a[])
+	{
+		long sum=0;
+		Stack<Integer> st = new Stack<Integer>();
+		st.push(v);
+		while (!st.isEmpty()) 
+		{
+			int element = st.pop();
+			
+			if (visited[element] == 0) 
+			{
+
+			//	System.out.println("element = "+ element);
+				sum+=a[element];
+					visited[element] = 1;
+
+				Stack<Integer> auxStack = new Stack<Integer>();
+				for (int w : adj.get(element))    //Take all the adjacent members for backtracing
+				{
+					if (visited[w] == 0)
+					{
+						auxStack.push(w);
+					}
+				}
+
+				while (!auxStack.isEmpty()) 
+				{
+					st.push(auxStack.pop());
+
+				}
+
+			}
+		
+		}
+		return sum;
+	}	
+}
+
