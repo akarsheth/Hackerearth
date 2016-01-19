@@ -1,0 +1,124 @@
+import java.util.*;
+import java.lang.*;
+import java.math.*;
+
+public class Tester 
+{
+	public static void main(String args[]) throws Exception
+	{
+	Scanner s=new Scanner(System.in);
+	int n=s.nextInt();	
+	int risk[]=new int[n+1];
+	int ris[]=new int[n+1];
+	for(int i=1;i<n+1;i++)
+	{
+		risk[i]=s.nextInt();
+		ris[i]=risk[i];
+	}
+
+	DisjointUnionSets ds=new DisjointUnionSets(n,risk);
+	
+	int k=s.nextInt();
+	
+	for(int i=0;i<k;i++)
+	{
+		int c=s.nextInt();
+		int b=s.nextInt();
+		ds.union(c, b,risk);
+	}
+	//int arr[]=new int[n];
+	
+		long ans=1;
+		long c[]=new long[n+1];
+		long mod=1000000007;
+		for(int i=1;i<n+1;i++) 
+		{
+       		int temp2=ds.findSet(i);
+       		System.out.println("risk of ds and risk" + ds.risk[temp2] + " " + ris[i]);
+       		if(ds.risk[temp2]==ris[i])
+       		{
+       			c[temp2]++;
+       			//System.out.println(temp2);
+       		}
+	//		temp[findSet(i)]+=1;
+			//System.out.println("vc"+ findSet(i));
+		}
+		
+		for(int i=1;i<n+1;i++)
+		{
+			if(ds.parent[i]==i)
+				ans=(ans*c[i])%mod;
+			//	System.out.println("ddd");
+			
+		}
+		
+		System.out.println(ans);
+	}
+	
+}
+class DisjointUnionSets 
+{
+	
+	int[] rank, parent,risk;
+	int n;
+	
+	public DisjointUnionSets(int n,int[] risk) 
+	{
+		rank = new int[n+1];
+		parent = new int[n+1];
+		
+		this.risk=risk;
+		this.n=n;
+		makeSet();
+	}
+	
+	void makeSet() 
+	{
+		
+		for(int i=1;i<=n;i++)
+		{  // Initially, all elements are in their own set.
+			parent[i] = i;
+		}
+	}
+	
+	int findSet(int x)
+	{ 
+		if(parent[x]!=x)
+		{ 
+			
+			parent[x] = findSet(parent[x]);
+		}
+			
+		return parent[x];
+	}
+	
+	void union(int x, int y,int[] risk)
+	{ 	
+		
+		int xRoot = findSet(x); 
+		int yRoot = findSet(y);
+		
+		int r=Math.min(risk[xRoot], risk[yRoot]);
+		risk[xRoot]=r;
+		risk[yRoot]=r;
+		if(xRoot == yRoot)  
+			return ;
+		if(rank[xRoot]<rank[yRoot]){ 
+			parent[xRoot] = yRoot; 
+		}
+		
+		else if(rank[yRoot]<rank[xRoot]){ 
+			parent[yRoot] = xRoot; 
+		}
+		
+		else
+		{
+			parent[yRoot] = xRoot; 
+			rank[xRoot] = rank[xRoot] + 1;  
+		}
+	//	return r;
+		
+	}
+	
+
+} 
