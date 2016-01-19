@@ -1,0 +1,111 @@
+import java.util.*;
+import java.lang.*;
+
+
+public class Tester
+{
+	static int a[]=new int[100000];
+	public static void main(String args[])
+	{
+		Scanner s=new Scanner(System.in);
+		int t=s.nextInt();
+		for(int x=0;x<t;x++)
+		{		
+		
+		int n=s.nextInt();
+
+		ArrayList<ArrayList<Integer>> adj = new ArrayList<ArrayList<Integer>>();
+		int visited[] = new int[100005];
+		for (int i = 0; i <=n; i++) 
+		{
+			adj.add(new ArrayList<Integer>());
+			visited[i] = 0;
+		}
+	
+		//int root = s.nextInt();
+		int city[]=new int[2*n];
+		int index=0;
+		for (int i = 1; i <= n; i++) 
+		{
+			
+			int c = s.nextInt();
+			
+			int b=s.nextInt();
+			index=add(index,city,c);
+			index=add(index,city,b);
+			{
+				adj.get(c).add(b);
+				adj.get(b).add(c);
+			}
+		}
+		for(int y=0;y<index;y++)
+		{
+		dfs2(adj, visited,city[y]);
+	
+		}
+		int ans=0;
+		for(int y=0;y<=index;y++)
+		{
+			if(a[y]==1)
+				ans++;
+	
+		}
+		System.out.println(ans);
+		}
+		
+	}
+	public static int add(int index,int city[],int value)
+	{
+		boolean flag=true;
+		for(int z=0;z<=index;z++)
+		{
+			if(city[z]==value)
+			{
+				flag=false;
+				break;
+			}	
+		}
+		if(flag)
+		{
+			city[index]=value;
+			index++;
+		}
+		return index;
+	}
+	public static  void dfs2(ArrayList<ArrayList<Integer>> adj, int[] visited,int v)
+	{
+
+		Stack<Integer> st = new Stack<Integer>();
+		st.push(v);
+		a[v]=1;
+		while (!st.isEmpty()) 
+		{
+			int element = st.pop();
+			a[element]=1;
+			if (visited[element] == 0) 
+			{
+				
+				visited[element] = 1;
+
+				Stack<Integer> auxStack = new Stack<Integer>();
+				for (int w : adj.get(element))
+				{
+					if (visited[w] == 0)
+					{
+						auxStack.push(w);
+					}
+				}
+
+				while (!auxStack.isEmpty()) 
+				{
+					st.push(auxStack.pop());
+
+				}
+
+			}
+		}
+	}
+}	
+
+
+
