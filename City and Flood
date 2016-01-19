@@ -1,0 +1,90 @@
+import java.util.*;
+import java.lang.*;
+
+public class Tester 
+{
+	public static void main(String args[])
+	{
+	Scanner s=new Scanner(System.in);
+	int n=s.nextInt();	
+	DisjointUnionSets ds=new DisjointUnionSets(n);
+	int invades=s.nextInt();
+	for(int i=0;i<invades;i++)
+	{
+		int c=s.nextInt();
+		int b=s.nextInt();
+		ds.union(c-1, b-1);
+	}
+	int arr[]=new int[n];
+	
+	for(int i=0;i<n;i++)
+	{
+		int x=ds.findSet(i);
+		arr[x]=1;
+	}
+	int ans=0;
+	for(int i=0;i<n;i++)
+	{
+		ans+=arr[i];
+		
+	}
+	System.out.println(ans);
+	
+	
+	}
+}
+class DisjointUnionSets 
+{
+	
+	int[] rank, parent;
+	int n;
+	
+	public DisjointUnionSets(int n) 
+	{
+		rank = new int[n];
+		parent = new int[n];
+		this.n=n;
+		makeSet();
+	}
+	
+	void makeSet() 
+	{
+		
+		for(int i=0;i<n;i++)
+		{  // Initially, all elements are in their own set.
+			parent[i] = i;
+		}
+	}
+	
+	int findSet(int x)
+	{ 
+		if(parent[x]!=x)
+		{ 
+			
+			parent[x] = findSet(parent[x]);
+		}
+			
+		return parent[x];
+	}
+	
+	void union(int x, int y)
+	{ 	
+		int xRoot = findSet(x); 
+		int yRoot = findSet(y); 
+		if(xRoot == yRoot)  
+			return;
+		if(rank[xRoot]<rank[yRoot]){ 
+			parent[xRoot] = yRoot; 
+		}
+		
+		else if(rank[yRoot]<rank[xRoot]){ 
+			parent[yRoot] = xRoot; 
+		}
+		
+		else{
+			parent[yRoot] = xRoot; 
+			rank[xRoot] = rank[xRoot] + 1;  
+		}
+	}
+
+} 
