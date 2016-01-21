@@ -1,0 +1,41 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+
+public class Karan_and_Trees 
+{
+	public static void main(String args[])throws Exception
+	{
+		BufferedReader s= new BufferedReader(new InputStreamReader(System.in));
+		int t=Integer.parseInt(s.readLine());
+		
+		while(t!=0)
+		{
+			t--;
+			String inp[]=s.readLine().split(" ");
+			int x=Integer.parseInt(inp[0]);
+			int y=Integer.parseInt(inp[1]);
+			boolean flag=true;
+		
+			while(x!=1 && y!=1)
+			{
+			
+				if(x==y)
+				{
+					System.out.println(x);
+					flag=false;
+					break;
+				}
+				if(x>y)
+					x/=2;
+				else
+					y/=2;
+				
+			}
+			if(flag)
+				System.out.println("1");
+			
+			
+		}
+	}
+}
