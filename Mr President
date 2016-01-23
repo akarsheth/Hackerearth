@@ -1,0 +1,176 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.List;
+import java.util.PriorityQueue;
+ public class President
+ {
+    public static void main(String args[]) throws NumberFormatException, IOException
+    {
+            
+        BufferedReader s = new BufferedReader(new InputStreamReader(System.in));
+        
+        	PriorityQueue<Edge> pq=new PriorityQueue<Edge>();
+        	String[] line = s.readLine().split(" "); 
+    		int n = Integer.parseInt(line[0]);
+    		int m = Integer.parseInt(line[1]);
+    		long k = Integer.parseInt(line[2]);
+    		double ans=0;
+            long count=0;
+            int y=0;
+            int weight[]=new int[n];
+    		for(int i=0;i<m;i++)
+    		{
+    			String[] li = s.readLine().split(" "); 
+    			int a = Integer.parseInt(li[0]);
+    			int b = Integer.parseInt(li[1]);
+    			int c = Integer.parseInt(li[2]);
+    			Edge e=new Edge(a-1,b-1,c);
+    			pq.add(e);
+    		}
+    		DisjointUnionSets ds=new DisjointUnionSets(n);
+            while(!pq.isEmpty())
+            {
+            	Edge e=pq.poll();
+            	if(ds.findSet(e.v1)!=ds.findSet(e.v2))
+            	{
+            		ds.union(e.v1,e.v2);
+            		//In case of minimum spanning tree we add the weights of the edges
+            		ans+=e.getWeight();
+            		weight[y]=e.getWeight();
+            		y++;
+            	}
+           }
+            Arrays.sort(weight);
+            boolean flag=true;
+           // System.out.println(ans);
+           int x=ds.findSet(0);
+            for(int i=0;i<n;i++)
+           {
+        	   if(ds.findSet(i)!=x)
+        		   flag=false;
+        	   
+           }
+            if(!flag)
+            {
+            	System.out.println("-1");
+            	return;
+            }
+           if(ans<=k)
+           {
+        	   System.out.println(count);
+           }
+           else
+           {
+        	   while(ans>k && n>0)
+        	   {
+        		   if(weight[n-1]==0)
+        			   break;
+        		  ans-=weight[n-1];
+        		  ans+=1;
+        		  n--;
+        		  count++;
+        		  
+        	   }
+        	   if(ans>k)
+        		   System.out.println("-1");
+        	   else
+        		   System.out.println(count);
+        	
+           }
+           
+        
+    }
+ }
+    class Edge implements Comparable<Edge>
+    {
+    	public int v1,v2,weight;
+    	Edge(int v1,int v2,int weight){
+    		this.v1 = v1;
+    		this.v2= v2;
+    		this.weight=weight;
+    	}
+    	
+    	public int getV1() {
+    		return v1;
+    	}
+    	public void setV1(int v1) {
+    		this.v1 = v1;
+    	}
+    	public int getV2() {
+    		return v2;
+    	}
+    	public void setV2(int v2) {
+    		this.v2 = v2;
+    	}
+    	public int getWeight() {
+    		return weight;
+    	}
+    	public void setWeight(int weight) {
+    		this.weight = weight;
+    	}
+    	  @Override
+          public int compareTo(Edge edge) 
+          {
+    		  return -(edge.getWeight()-this.weight);
+          }
+    }	  
+     
+     class DisjointUnionSets 
+     {
+    	
+    	int[] rank, parent;
+    	int n;
+    	
+    	public DisjointUnionSets(int n) 
+    	{
+    		rank = new int[n];
+    		parent = new int[n];
+    		this.n=n;
+    		makeSet();
+    	}
+    	
+    	void makeSet() 
+    	{
+    		
+    		for(int i=0;i<n;i++)
+    		{  // Initially, all elements are in their own set.
+    			parent[i] = i;
+    		}
+    	}
+    	
+    	int findSet(int x)
+    	{ 
+    		if(parent[x]!=x)
+    		{ 
+    			
+    			parent[x] = findSet(parent[x]);
+    		}
+    			
+    		return parent[x];
+    	}
+    	
+    	void union(int x, int y)
+    	{ 	
+    		int xRoot = findSet(x); 
+    		int yRoot = findSet(y); 
+    		if(xRoot == yRoot)  
+    			return;
+    		if(rank[xRoot]<rank[yRoot]){ 
+    			parent[xRoot] = yRoot; 
+    		}
+    		
+    		else if(rank[yRoot]<rank[xRoot]){ 
+    			parent[yRoot] = xRoot; 
+    		}
+    		
+    		else{
+    			parent[yRoot] = xRoot; 
+    			rank[xRoot] = rank[xRoot] + 1;  
+    		}
+    	}
+     
+ 
+     }
+ 
