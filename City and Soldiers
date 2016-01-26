@@ -1,0 +1,89 @@
+
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class city_and_Soldiers
+{
+	public static void main(String args[])throws Exception
+	{
+		BufferedReader s=new BufferedReader(new InputStreamReader(System.in));
+		String inp[]=s.readLine().split(" ");
+		int n=Integer.parseInt(inp[0]);
+		int q=Integer.parseInt(inp[1]);
+		DisjointUnionSets ds=new DisjointUnionSets(n);
+		int query,x,y;
+		for(int i=0;i<q;i++)
+		{
+			inp=s.readLine().split(" ");
+			query=Integer.parseInt(inp[0]);
+			if(query==1)
+			{
+			x=Integer.parseInt(inp[1]);
+			y=Integer.parseInt(inp[2]);
+			ds.union(x, y);
+					
+			}
+			else if(query==2)
+			{
+				x=Integer.parseInt(inp[1]);
+				y=ds.findSet(x);
+				if(x==y)
+					continue;
+				ds.parent[y]=x;
+				ds.parent[x]=x;
+			}
+			else if(query==3)
+			{
+				x=Integer.parseInt(inp[1]);
+				System.out.println(ds.findSet(x));
+			}
+			
+		}
+	
+	}
+}
+
+class DisjointUnionSets 
+{
+	
+	int[] rank, parent;
+	int n;
+	
+	public DisjointUnionSets(int n) 
+	{
+		rank = new int[n+1];
+		parent = new int[n+1];
+		this.n=n;
+		makeSet();
+	}
+	
+	void makeSet() 
+	{
+		
+		for(int i=1;i<=n;i++)
+		{  // Initially, all elements are in their own set.
+			parent[i] = i;
+		}
+	}
+	
+	int findSet(int x)
+	{ 
+		if(parent[x]!=x)
+		{ 
+			
+			parent[x] = findSet(parent[x]);
+		}
+			
+		return parent[x];
+	}
+	
+	void union(int x, int y)
+	{ 	
+		int xRoot = findSet(x); 
+		int yRoot = findSet(y)	; 
+		
+			parent[xRoot] = yRoot; 
+	}
+}
+
