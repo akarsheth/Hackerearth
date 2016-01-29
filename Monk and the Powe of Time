@@ -1,0 +1,91 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+
+
+public class queues 
+{
+	public static void main(String args[])throws Exception
+	{
+		BufferedReader s =new BufferedReader(new InputStreamReader(System.in));
+		int n=Integer.parseInt(s.readLine());
+		CircularQueue q=new CircularQueue(n);
+		
+			int ideal[]=new int[n];
+			String inp[]=s.readLine().split(" ");
+			for(int j=0;j<n;j++)
+			{
+				q.add(Integer.parseInt(inp[j]));
+			}
+			inp=s.readLine().split(" ");
+			for(int j=0;j<n;j++)
+			{
+				ideal[j]=Integer.parseInt(inp[j]);
+			}
+			int j=0,time=0;
+			
+			while(j!=n)
+			{
+				if(q.peek()==ideal[j])
+				{
+					time++;
+					q.poll();
+					j++;
+					continue;
+				}
+				else
+				{
+					int x=q.poll();
+					q.add(x);
+					time++;
+				}
+				
+			}
+			System.out.println(time);
+	}
+}
+ class CircularQueue
+	{
+	    int[] queue; 
+	    int front;
+	    int rear; 
+	    int currentSize;
+	    int size;
+
+	    public CircularQueue(int size)
+	    { 
+	        this.queue = new int[size];
+	        this.front = 0;
+	        this.rear = 0;
+	        this.size = size;
+	        this.currentSize = 0;
+	    }
+
+	    public synchronized boolean add(int x)
+	    {
+
+	        
+
+	        queue[rear++] = x;
+	        rear = (rear) % size;
+	        currentSize++;
+
+	        return true;
+	    }
+
+	    public synchronized int peek()
+	    {
+	       // if (front == rear) {
+	         //   throw new IllegalStateException("The queue is empty");
+	        //}
+	        return queue[front%size];
+	    }
+
+	    public synchronized int poll()
+	    {
+	        
+	        currentSize--;
+	        return queue[front++%size];
+	    }
+	}
+
