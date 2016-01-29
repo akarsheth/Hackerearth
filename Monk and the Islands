@@ -1,0 +1,155 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.PriorityQueue;
+
+public class Tester {
+	public static void main(String args[]) throws NumberFormatException,
+			IOException {
+
+		BufferedReader s = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+		int t = Integer.parseInt(s.readLine());
+
+		for (int l = 0; l < t; l++) {
+
+			String[] line = s.readLine().split(" ");
+			PriorityQueue<Vertex> pq = new PriorityQueue<Vertex>();
+
+			int n = Integer.parseInt(line[0]);
+			int m = Integer.parseInt(line[1]);
+			Vertex[] va = new Vertex[n];
+			int root = 0;
+			int arr[]=new int[n];
+			for (int i = 0; i < m; i++) 
+			{
+				String[] li = s.readLine().split(" ");
+				int a = Integer.parseInt(li[0]);
+				int b = Integer.parseInt(li[1]);
+				a--;
+				b--;
+				if (va[a] == null) 
+				{
+					va[a] = new Vertex(a, Integer.MAX_VALUE);  //sets the distance at infinity
+				}
+				if (va[b] == null) 
+				{
+					va[b] = new Vertex(b, Integer.MAX_VALUE);
+				}
+				Edge e = new Edge(va[a], va[b], 1);
+
+			}
+			va[root].distance = 0;
+			// pq.remove(va[root]);
+			pq.add(va[root]);
+
+			while (!pq.isEmpty()) {
+				Vertex v = pq.poll();
+
+				for (Edge e : va[v.id].getEdges()) {
+					Vertex u = e.other(v);
+					
+					if (u.distance > v.distance + e.getWeight())
+					{
+						u.distance = v.distance + e.getWeight();
+						// pq.remove(u);
+						pq.add(u);
+
+					}
+				}
+			}
+			System.out.println(va[n-1].distance );
+			
+
+		}
+		out.close();
+	}
+}
+
+class Vertex implements Comparable<Vertex> {
+	int id;
+	int distance;
+	private ArrayList<Edge> edges = new ArrayList<Edge>();
+
+	@Override
+	public int compareTo(Vertex v1) {
+		return -(v1.distance - this.distance);
+	}
+
+	Vertex(int id, int d) {
+		this.id = id;
+		this.distance = d;
+	}
+
+	public void addAdjacentVertex(Edge e, Vertex v) {
+		edges.add(e);
+		// adjacentVertex.add(v);
+	}
+
+	@Override
+	public String toString() {
+		return String.valueOf(id);
+	}
+
+	public ArrayList<Edge> getEdges() {
+		return edges;
+	}
+
+	public int getDegree() {
+		return edges.size();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (id ^ (id >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Vertex other = (Vertex) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+}
+
+class Edge implements Comparable<Edge> {
+	Vertex v1, v2;
+	int weight;
+
+	Edge(Vertex v1, Vertex v2, int weight) {
+		this.v1 = v1;
+		this.v2 = v2;
+		this.weight = weight;
+		v1.addAdjacentVertex(this, v2);
+		v2.addAdjacentVertex(this, v1);
+	}
+
+	public Vertex other(Vertex v) {
+		if (v.id == v1.id) {
+			return v2;
+		} else
+			return v1;
+	}
+
+	public int getWeight() {
+		return weight;
+	}
+
+	@Override
+	public int compareTo(Edge edge) {
+		return -(edge.getWeight() - this.weight);
+	}
+}
