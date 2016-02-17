@@ -1,0 +1,32 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+
+public class Monk_polynomial
+{
+	public static void main(String args[])throws Exception
+	{
+		BufferedReader s =new BufferedReader(new InputStreamReader(System.in));
+		int t=Integer.parseInt(s.readLine());
+		for(int i=0;i<t;i++)
+		{
+			String inp[]=s.readLine().split(" ");
+			long a=Integer.parseInt(inp[0]);
+			long b=Integer.parseInt(inp[1]);
+			long c=Integer.parseInt(inp[2]);
+			long k=Integer.parseInt(inp[3]);
+			int x=0;
+			while(true)
+			{
+
+				if(a*x*x + b*x + c>=k)
+				{
+					System.out.println(x);
+					break;
+				}
+				x++;
+
+			}
+		}
+	}
+}
