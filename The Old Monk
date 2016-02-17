@@ -1,0 +1,59 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+
+public class Old_Monk 
+{
+	public static void main(String args[])throws Exception
+	{
+		BufferedReader s =new BufferedReader(new InputStreamReader(System.in));
+		int t=Integer.parseInt(s.readLine());
+		for(int l=0;l<t;l++)
+		{	
+			int n=Integer.parseInt(s.readLine());
+			String inp[]=s.readLine().split(" ");
+			long arr[]=new long[n];
+			long brr[]=new long[n];
+			for(int j=0;j<n;j++)
+			{
+				arr[j]=Long.parseLong(inp[j]);
+			}
+			inp=s.readLine().split(" ");
+			for(int j=0;j<n;j++)
+			{
+				brr[j]=Long.parseLong(inp[j]);
+			}
+			long ans=0;
+			for(int i=0;i<n;i++)
+			{
+					long x=getlastnum(arr[i],brr);
+					if(x-i>ans)
+					{
+						ans=x-i;
+					}
+			
+			}
+			System.out.println(ans);
+		}
+	}
+	public static long getlastnum(long num,long brr[])
+	{
+		int first  = 0;
+		int last   = brr.length - 1;
+		int middle = (first + last)/2;
+
+		while( first <= last )
+		{
+			if ( brr[middle] >= num )
+				first = middle + 1;    
+			
+			else
+				last = middle - 1;
+
+			middle = (first + last)/2;
+		}
+	
+
+		return last;
+	}
+}
