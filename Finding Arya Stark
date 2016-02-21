@@ -1,0 +1,361 @@
+	
+	
+	import java.io.IOException;
+	import java.io.InputStream;
+	import java.io.OutputStreamWriter;
+	import java.io.PrintWriter;
+	import java.util.ArrayList;
+	import java.util.InputMismatchException;
+	import java.util.PriorityQueue;
+	import java.util.Stack;
+	
+	public class Arya
+	{
+		static int city = 0;
+		static int[] dfsin, dfsout;
+		static int depth = 0;
+		static int height[];
+	
+		
+		public static void main(String[] args)
+		{
+			InputReader s = new InputReader(System.in);
+			PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+	
+			int n = s.nextInt();
+			ArrayList<ArrayList<Integer>> adj = new ArrayList<ArrayList<Integer>>();
+			int visited[] = new int[n + 1];
+			for (int i = 0; i <= n; i++)
+			{
+				adj.add(new ArrayList<Integer>());
+				visited[i] = 0;
+			}
+			int root = 0;
+			dfsin = new int[n + 1];
+			dfsout = new int[n + 1];
+			height = new int[n + 1];
+			Vertex va[]=new Vertex[n+1];
+			for (int i = 0; i< n-1; i++)
+			{
+				int a = s.nextInt()-1;
+				int b= s.nextInt()-1;
+				adj.get(a).add(b);
+				adj.get(b).add(a);
+				if (va[a] == null) 
+				{
+					va[a] = new Vertex(a, Integer.MAX_VALUE);  //sets the distance at infinity
+				}
+				if (va[b] == null) 
+				{
+					va[b] = new Vertex(b, Integer.MAX_VALUE);
+				}
+				Edge e = new Edge(va[a], va[b], 1);
+	
+			}
+			
+			dfs2(adj, visited, root);
+			
+			int q = s.nextInt();
+			for (int i = 0; i < q; i++) 
+			{
+				
+				int k=s.nextInt();
+				int y = s.nextInt()-1;
+				int x = s.nextInt()-1;  // going from x to y
+				if(k==0)
+				{
+					if (dfsin[y] <= dfsin[x] && dfsout[y] >= dfsout[x])
+					{
+	
+						out.println("YES " + (height[x]-height[y]+1));
+						
+					}
+					else 
+					{
+	
+						out.println("NO");
+					}
+				}
+				else if(k==1)
+				{
+					if (dfsin[x] <= dfsin[y] && dfsout[x] >= dfsout[y])
+					{
+						
+						out.println("YES " + (height[y]-height[x]+1));
+					}
+					else {
+	
+						out.println("NO");
+					}
+	
+				}
+	
+			}
+	
+			out.close();
+		}
+	
+		private static void dfs2(ArrayList<ArrayList<Integer>> adj, int[] visited,
+				int v)
+		{
+	
+			Stack<Integer> st = new Stack<Integer>();
+			st.push(v);
+	
+	
+	
+			while (!st.isEmpty()) {
+	
+				int element = st.peek();
+	
+				if (visited[element] == 0) {
+	
+					visited[element] = 1;
+					city++;
+					dfsin[element]=city;
+					for (int w : adj.get(element)) {
+						if (visited[w] == 0) {
+							height[w] = height[element]+1;
+							
+							st.push(w);
+	
+						}
+	
+					}
+	
+	
+					/*	while (!auxStack.isEmpty()) {
+	    					st.push(auxStack.pop());
+	
+	    				}*/
+	
+				}
+				else
+				{
+					int e=st.pop();
+					city++;
+					dfsout[e]=city;
+				}
+			}	
+	
+		}
+		public static long shortestpath(Vertex vold[],int root,int destination)
+		{
+			int n=vold.length;
+			Vertex[] vb =new Vertex[100000];
+			for(int i=0;i<n-1;i++)
+				vb[i]=new Vertex(vold[i]);
+			
+			vb[root].distance = 0;
+			// pq.remove(va[root]);
+			PriorityQueue<Vertex> pq=new PriorityQueue<Vertex>();
+			pq.add(vb[root]);
+	
+			while (!pq.isEmpty()) 
+			{
+				Vertex v = pq.poll();
+	
+				for (Edge e : vb[v.id].getEdges()) 
+				{
+					Vertex u = e.other(v);
+					
+					if (u.distance > v.distance + e.getWeight()) 
+					{
+						u.distance = v.distance + e.getWeight();
+						// pq.remove(u);
+						pq.add(u);
+						
+					}
+					vb[u.id].distance=u.distance;
+				}
+			}
+			return vb[destination].distance;
+		}	
+	
+	
+	}
+	class Vertex implements Comparable<Vertex> {
+		int id;
+		int distance;
+		private ArrayList<Edge> edges = new ArrayList<Edge>();
+		Vertex(Vertex v)
+		{
+			this.id=v.id;
+			this.distance=v.distance;
+			this.edges=v.edges;
+		}
+	
+		@Override
+		public int compareTo(Vertex v1) {
+			return -(v1.distance - this.distance);
+		}
+	
+		Vertex(int id, int d) {
+			this.id = id;
+			this.distance = d;
+		}
+	
+		public void addAdjacentVertex(Edge e, Vertex v) {
+			edges.add(e);
+			// adjacentVertex.add(v);
+		}
+	
+		@Override
+		public String toString() {
+			return String.valueOf(id);
+		}
+	
+		public ArrayList<Edge> getEdges() {
+			return edges;
+		}
+	
+		public int getDegree() {
+			return edges.size();
+		}
+	
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + (id ^ (id >>> 32));
+			return result;
+		}
+	
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			Vertex other = (Vertex) obj;
+			if (id != other.id)
+				return false;
+			return true;
+		}
+	}
+	
+	class Edge implements Comparable<Edge> {
+		Vertex v1, v2;
+		int weight;
+	
+		Edge(Vertex v1, Vertex v2, int weight) {
+			this.v1 = v1;
+			this.v2 = v2;
+			this.weight = weight;
+			v1.addAdjacentVertex(this, v2);
+			v2.addAdjacentVertex(this, v1);
+			
+		}
+	
+		public Vertex other(Vertex v) {
+			if (v.id == v1.id) {
+				return v2;
+			} else
+				return v1;
+		}
+	
+		public int getWeight() {
+			return weight;
+		}
+	
+		@Override
+		public int compareTo(Edge edge) {
+			return -(edge.getWeight() - this.weight);
+		}
+	}
+	
+	class InputReader {
+		private InputStream stream;
+		private byte[] buf = new byte[1024];
+		private int curChar;
+		private int numChars;
+		private SpaceCharFilter filter;
+	
+		public InputReader(InputStream stream) {
+			this.stream = stream;
+		}
+	
+		public static boolean isWhitespace(int c) {
+			return c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1;
+		}
+	
+		public int read() {
+			if (numChars == -1)
+				throw new InputMismatchException();
+			if (curChar >= numChars) {
+				curChar = 0;
+				try {
+					numChars = stream.read(buf);
+				} catch (IOException e) {
+					throw new InputMismatchException();
+				}
+				if (numChars <= 0)
+					return -1;
+			}
+			return buf[curChar++];
+		}
+	
+		public int nextInt() {
+			int c = read();
+			while (isSpaceChar(c))
+				c = read();
+			int sgn = 1;
+			if (c == '-') {
+				sgn = -1;
+				c = read();
+			}
+			int res = 0;
+			do {
+				if (c < '0' || c > '9')
+					throw new InputMismatchException();
+				res *= 10;
+				res += c - '0';
+				c = read();
+			} while (!isSpaceChar(c));
+			return res * sgn;
+		}
+	
+		public long nextLong() {
+			int c = read();
+			while (isSpaceChar(c))
+				c = read();
+			int sgn = 1;
+			if (c == '-') {
+				sgn = -1;
+				c = read();
+			}
+			long res = 0;
+			do {
+				if (c < '0' || c > '9')
+					throw new InputMismatchException();
+				res *= 10;
+				res += c - '0';
+				c = read();
+			} while (!isSpaceChar(c));
+			return res * sgn;
+		}
+	
+		public String nextToken() {
+			int c = read();
+			while (isSpaceChar(c))
+				c = read();
+			StringBuilder res = new StringBuilder();
+			do {
+				res.appendCodePoint(c);
+				c = read();
+			} while (!isSpaceChar(c));
+			return res.toString();
+		}
+	
+		public boolean isSpaceChar(int c) {
+			if (filter != null)
+				return filter.isSpaceChar(c);
+			return isWhitespace(c);
+		}
+	
+		public interface SpaceCharFilter {
+			public boolean isSpaceChar(int ch);
+		}
+	}
